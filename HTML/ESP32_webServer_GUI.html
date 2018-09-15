@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport" content="width=device-width, minimumscale=1.0, maximum-scale=1.0, initial-scale=1" />
+	<style>
+		body {
+			text-align: center;
+			background-color: #ccc7c7;
+			margin: auto;
+			width: 60%;
+		}
+
+		#dataVals {
+			display: block;
+			margin-top: 5%;
+		}
+
+		.convertButton {
+			clear: both;
+			position: relative;
+			-moz-box-shadow: 0px 1px 0px 0px #fff6af;
+			-webkit-box-shadow: 0px 1px 0px 0px #fff6af;
+			box-shadow: 0px 1px 0px 0px #fff6af;
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23));
+			background: -moz-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background: -webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background: -o-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background: -ms-linear-gradient(top, #ffec64 5%, #ffab23 100%);
+			background: linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffec64', endColorstr='#ffab23', GradientType=0);
+			background-color: #ffec64;
+			-moz-border-radius: 6px;
+			-webkit-border-radius: 6px;
+			border-radius: 6px;
+			border: 1px solid #ffaa22;
+			display: inline-block;
+			cursor: pointer;
+			color: #333333;
+			font-family: Arial;
+			font-size: 21px;
+			padding: 14px 69px;
+			text-decoration: none;
+			text-shadow: 0px 1px 0px #ffee66;
+		}
+
+		.convertButton:hover {
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffab23), color-stop(1, #ffec64));
+			background: -moz-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background: -webkit-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background: -o-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background: -ms-linear-gradient(top, #ffab23 5%, #ffec64 100%);
+			background: linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffab23', endColorstr='#ffec64', GradientType=0);
+			background-color: #ffab23;
+		}
+
+		.convertButton:active {
+			position: relative;
+			top: 1px;
+		}
+
+		.convertButton:active {
+			position: relative;
+			top: 1px;
+		}
+
+		#curtain,
+		#encoder {
+			background-color: white;
+			padding: 1%;
+			width: 12%;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		#msgCore0,
+		#msgCore1 {
+			background-color: white;
+			padding: 1%;
+			width: 45%;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	</style>
+</head>
+
+<body>
+	<br>
+	<br>
+	<h1>How Said that Art Couldn't also be a Web Server?</h1>
+	<h2>This is an Access Point Web Server Hosted on the Second Core of an ESP32 for the Greatest Piece of Art Installation</h2>
+	<h3>Created by Christoffer Vincent W. Thon, DTU Skylab Denmark, 27-02-2018</h3>
+	<br>
+
+	<p><a href="/toggle"><button class="convertButton" id="viewButton"> Curtains IN / OUT </button></a></p>
+
+	<!--<a onClick="changeState()" class="convertButton" id="viewButton">Curtains IN/OUT</a>-->
+	<div id="dataVals">
+		<h2>Curtain Position:</h2>
+		<div id="curtain">@</div>
+		<h2>Encoder Value:</h2>
+		<div id="encoder">@</div>
+		<h2>Messages From ESP32 Core 0:</h2>
+		<div id="msgCore0">@</div>
+		<h2>Messages From ESP32 Core 1:</h2>
+		<div id="msgCore1">@</div>
+	</div>
+	<br>
+	<br>
+	<br>
+	<p>If you Find this project Interesting - Please Visit my Website for more Info</p>
+	<p>http://creative-engineering.org/</p>
+
+
+	<script> 
+		var changed = false;
+		function changeState() {
+
+			if (changed == false) {
+				console.log("state = TRUE");
+				changed = true;
+			}
+			else {
+				console.log("state = FALSE");
+				changed = false;
+			}
+		}
+
+		function loadDoc() {
+			var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					var obj = JSON.parse(this.responseText);
+					document.getElementById("curtain").innerHTML = obj.data[0].dataValue;
+					document.getElementById("encoder").innerHTML = obj.data[1].dataValue;
+					document.getElementById("msgCore0").innerHTML = obj.data[2].dataValue;
+					document.getElementById("msgCore1").innerHTML = obj.data[3].dataValue;
+				}
+			};
+
+			xhttp.open("GET", "/data", true); xhttp.send();
+		}
+
+		var timedEvent = setInterval(function () { loadDoc(); }, 100);
+
+	</script>
+</body>
+
+</html>
