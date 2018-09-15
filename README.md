@@ -6,4 +6,4 @@ Both the “Dlib” face detection model and eye blink script has more or less b
 The code for the ESP32 utilizes both cores of the microcontroller. One for an wireless access point with which the system can be activated and monitored while developing as well as one core for the sensor and actuator handling.   
 
 
-![alt text](img/GPOA.png)
+![alt text](img/GPOA.gif)

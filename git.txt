@@ -1,6 +1,0 @@
-echo "# greatest_pieces_of_art" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/creative-engineering/greatest_pieces_of_art.git
-git push -u origin master
