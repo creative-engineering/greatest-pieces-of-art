@@ -5,19 +5,18 @@ from imutils.video import VideoStream
 from imutils import face_utils
 from threading import Thread
 import numpy as np
-import playsound
 import argparse
 import imutils
 import time
 import dlib
 import cv2
 import serial
-import struct
-import pygame
 
-pygame.init()
-pygame.mixer.init()
 arduino = serial.Serial('/dev/ttyUSB0', 115200)
+
+def sound_alarm(path):
+	# play an alarm sound
+	playsound.playsound(path)
 
 def eye_aspect_ratio(eye):
 	# compute the euclidean distances between the two sets of
@@ -49,13 +48,12 @@ args = vars(ap.parse_args())
 # blink and then a second constant for the number of consecutive
 # frames the eye must be below the threshold for to set off the
 # alarm
-EYE_AR_THRESH = 0.25
+EYE_AR_THRESH = 0.21
 EYE_AR_CONSEC_FRAMES = 2
 
 # initialize the frame counter as well as a boolean used to
 # indicate if the alarm is going off
 COUNTER = 0
-ALARM_ON = False
 state = 0
 
 # initialize dlib's face detector (HOG-based) and then create
@@ -74,13 +72,15 @@ print("[INFO] starting video stream thread...")
 vs = VideoStream(src=args["webcam"]).start()
 time.sleep(1.0)
 
+arduino.write(str.encode(str(0)));
+
 # loop over frames from the video stream
 while True:
 	# grab the frame from the threaded video file stream, resize
 	# it, and convert it to grayscale
 	# channels)
 	frame = vs.read()
-	frame = imutils.resize(frame, width=450)
+	frame = imutils.resize(frame, width=720)
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 	# detect faces in the grayscale frame
@@ -125,10 +125,6 @@ while True:
 					arduino.write(str.encode(str(state)))
 					print state
 
-				if not ALARM_ON:
-					ALARM_ON = True
-					#sounda.play()
-
 				# draw an alarm on the frame
 				cv2.putText(frame, "EYES CLOSED", (10, 30),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -142,8 +138,6 @@ while True:
 				print state
 			
 			COUNTER = 0
-			#sounda.stop()
-			ALARM_ON = False
 
 		# draw the computed eye aspect ratio on the frame to help
 		# with debugging and setting the correct eye aspect ratio
